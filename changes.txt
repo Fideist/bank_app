@@ -1,0 +1,5 @@
+1. invoke promise applyMiddleware
+2. pass with credentials true on initial axios call
+3. configure cors to use origin and credentials true
+4. users.js...Change getUserInfo
+5. added migration for creating balance table
