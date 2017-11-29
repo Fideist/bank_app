@@ -1,0 +1,30 @@
+3. recursion
+
+function sum (list) {
+  if (list.length == 0) return 0
+  else {
+    var head = list.shift();
+    return head + sum(list);
+  }
+}
+
+1. given a string
+
+function onlyUnique (str) {
+ +    var storage = {};
+ +    var output = '';
+ +    for (var i = 0; i < str.length; i++) {
+ +        if (!storage[str[i]]) {
+ +            storage[str[i]] = 1;
+ +        } else {
+ +            storage[str[i]] += 1;
+ +        }
+ +    }
+ +
+ +    for (var key in storage) {
+ +        if (storage[key] === 1) {
+ +            output += key;
+ +        }
+ +    }
+ +    return output;
+ +}
