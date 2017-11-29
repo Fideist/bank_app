@@ -11,8 +11,8 @@ class Accounts extends Component {
         this.props.getUserInfo();
     }
     render() {
-        console.log(this.props.user)
         const { data } = this.props.user;
+        console.log(222222, data);
         const loginJSX = (
             data ?
             <div className='info-container'>
@@ -39,7 +39,7 @@ class Accounts extends Component {
 
 function mapStateToProps(state) {
     return {
-        user: state.user
+        user: state.users
     }
 }
 

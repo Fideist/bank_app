@@ -21,11 +21,12 @@ export default function(state=initialState, action) {
 }
 
 export function getUserInfo() {
+    const userInfo = axios.get('http://localhost:3005/auth/me', { withCredentials: true }).then(res => {
+        return res.data
+});
     return {
         type: GET_USER_INFO,
-        payload: axios('http://localhost:3005/auth/me').then(res => {
-            return res.data
-        })
+        payload: userInfo
     }
 }
 

@@ -16,7 +16,7 @@ massive(process.env.DB_CONNECTION_STRING).then( db => {
     app.set('db', db);
 }).catch(err => console.log('err', err))
 
-app.use(cors());
+app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 
 app.use(session({
     secret: process.env.SECRET,
@@ -37,12 +37,14 @@ passport.use(new Auth0Strategy({
     const db = app.get('db');
     db.find_user({auth_id: profile.identities[0].user_id}).then(users => {
         let user = users[0];
+       
         if (user) {
             return done(null, { id: user.id })
-        } else {
+        } 
+        else {
             db.create_user({
                 username: profile.displayName,
-                email: profile.emails[0].vaule,
+                email: profile.emails[0].value,
                 img: profile.picture,
                 auth_id: profile.identities[0].user_id
             }).then(users => {
