@@ -13,7 +13,6 @@ class Accounts extends Component {
 
     deposit = (amount, id) => {
       axios.post(`http://localhost:3005/user/balance?Action=deposit&amount=100&currentAmount=${amount}&userId=${id}`).then(balance => {
-        console.log('balance', balance)
         let updatedBalance = balance.data[0].balance
         this.props.updateBalance(updatedBalance)
       })
@@ -33,7 +32,6 @@ class Accounts extends Component {
     }
     render() {
         const { data } = this.props.user;
-        console.log(222222, data);
         const loginJSX = (
             data ?
             <div className='info-container'>
@@ -66,8 +64,6 @@ class Accounts extends Component {
 }
 
 function mapStateToProps(state) {
-  console.log(state)
-
     return {
         user: state.users
     }

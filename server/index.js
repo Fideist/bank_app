@@ -82,7 +82,6 @@ passport.deserializeUser((user, done) => {
         let user = users[0];
         var db = app.get('db');
         db.find_balance([user.id]).then(balance => {
-          console.log('This is the balance from the database', balance)
           if(balance) {
             user.balance = balance[0].balance
             return done(null, user);
@@ -93,12 +92,11 @@ passport.deserializeUser((user, done) => {
 
 app.get('/auth', passport.authenticate('auth0'));
 app.get('/auth/callback', passport.authenticate('auth0', {
-    successRedirect: 'http://localhost:3200/#/accounts',
-    failureRedirect: 'http://localhost:3200/#/'
+    successRedirect: 'http://localhost:3000/#/accounts',
+    failureRedirect: 'http://localhost:3000/#/'
 }))
 
 app.get('/auth/me', (req, res) => {
-    console.log('This is the req.user', req.user)
     if(req.user) {
        return res.send(req.user);
     } else {
@@ -108,41 +106,36 @@ app.get('/auth/me', (req, res) => {
 
 
 app.post('/user/balance', (req, res) => {
-  var db = app.get('db');
-  switch(req.query.Action) {
-    case 'deposit':
-    let balanceToUpdate = Number(req.query.currentAmount) + Number(req.query.amount);
-    console.log('balance to update', balanceToUpdate)
-
-    db.deposit_100([balanceToUpdate, req.query.userId]).then(balance => {
-      console.log('balance from database', balance)
-      if(balance) {
-        res.status(200).send(balance)
-      }
-    })
-    break;
-
-    case 'withdraw':
-    db.check_balance([req.query.userID]).then(balance => {
-      let currentBalance = balance[0].balance
-      let balanceToUpdate = req.query.currentAmount - req.query.amount
-      if(currentBalance >= 100) {
-        db.withdraw_100([balanceToUpdate, req.query.userID]).then( balance => {
-          if(balance) {
-            res.status(200).send(balance)
-          }
-        })
-      }
-      else {
-        res.status(200).send('Balance is too low');
-      }
-    })
-    break;
-
-    default:
-    res.status(200).send('No action submitted')
-    break;
-  }
+    var db = app.get('db');
+    switch(req.query.Action) {
+        case 'deposit':
+            let balanceToUpdate = Number(req.query.currentAmount) + Number(req.query.amount);
+            db.deposit_100([balanceToUpdate, req.query.userId]).then(balance => {
+                if(balance) {
+                    res.status(200).send(balance)
+                }
+            })
+            break;
+        case 'withdraw':
+            db.check_balance([req.query.userId]).then(balance => {
+                let currentBalance = balance[0].balance;
+                let balanceToUpdate = req.query.currentAmount - req.query.amount;
+                if(currentBalance >= 100) {
+                    db.withdraw_100([balanceToUpdate, req.query.userId]).then( balance => {
+                    if(balance) {
+                        res.status(200).send(balance)
+                    }
+                })
+            }
+                else {
+                    res.status(200).send('Balance is too low');
+                }
+            })
+            break;
+        default:
+            res.status(200).send('No action submitted')
+            break;
+    }
 })
 
 app.listen(port, () => {
